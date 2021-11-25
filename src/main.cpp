@@ -1,6 +1,6 @@
-#include "sim.h"
-
 #include <SFML/Graphics.hpp>
+
+#include "sim.h"
 
 #define SIM_SIZE 800
 
