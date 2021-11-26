@@ -1,4 +1,4 @@
-CXX := nvc++
+CXX := g++
 CPPFLAGS := -lsfml-window -lsfml-graphics -lsfml-system
 INCLUDE := -Iinclude
 
