@@ -21,8 +21,6 @@ int main()
 
         window.clear();
 
-        sim.render(window);
-
         window.display();
     }
 }
