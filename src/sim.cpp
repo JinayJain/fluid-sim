@@ -1,5 +1,5 @@
 #include "sim.h"
-
+#include<cmath>
 #include <vector>
 
 Sim::Sim(int width, int height)
@@ -78,7 +78,67 @@ void Sim::diffuse(int b, std::vector<float> &x, std::vector<float> &x0, float di
 }
 
 /// Project array values
-void Sim::project(std::vector<float> &velocX, std::vector<float> &velocY, std::vector<float> &p, std::vector<float> &div, int iter) {}
+void Sim::project(std::vector<float> &velocX, std::vector<float> &velocY, std::vector<float> &p, std::vector<float> &div, int iter) {
+    for (int j = 1; j < height - 1; j++) {
+        for (int i = 1; i < width - 1; i++) {
+        	div[idx(i, j)] = -0.5f*(velocX[idx(i+1, j)] -velocX[idx(i-1, j)] + velocY[idx(i, j+1)]-velocY[idx(i, j-1)])/height;
+            p[idx(i, j)] = 0;
+    	}
+    }
+	setBoundary(0, div); 
+	setBoundary(0, p);
+	linSolve(0, p, div, 1, 6, iter);
+	for (int j = 1; j < height - 1; j++) {
+		for (int i = 1; i < width - 1; i++) {
+			velocX[idx(i, j)] -= 0.5f * (p[idx(i+1, j)] - p[idx(i-1, j)]) * width;
+			velocY[idx(i, j)] -= 0.5f * (p[idx(i, j+1)] -p[idx(i, j-1)]) * height;
+		}
+    }
+	setBoundary(1, velocX);
+   	setBoundary(2, velocY);
+}
 
 /// Advect array values
-void Sim::advect(int b, std::vector<float> &d, std::vector<float> &d0, std::vector<float> &velocX, std::vector<float> &velocY, float dt) {}
+void Sim::advect(int b, std::vector<float> &d, std::vector<float> &d0, std::vector<float> &velocX, std::vector<float> &velocY, float dt) {
+    float i0, i1, j0, j1;
+    float dtx = dt * (width - 2);
+	float dty = dt * (height - 2);
+    
+    float s0, s1, t0, t1;
+    float tmp1, tmp2, x, y;
+    
+    float widthFloat = width;
+    float heightFloat = height;
+    float ifloat, jfloat;
+    int j, i;
+	for(j = 1, jfloat = 1; j < height - 1; j++, jfloat++) { 
+		for(i = 1, ifloat = 1; i < width - 1; i++, ifloat++) {
+            tmp1 = dtx * velocX[idx(i, j)];
+            tmp2 = dty * velocY[idx(i, j)];
+            x = ifloat - tmp1; 
+            y = jfloat - tmp2;
+                
+            if(x < 0.5f) x = 0.5f; 
+            if(x > widthFloat + 0.5f) x = widthFloat + 0.5f; 
+            i0 = ::floorf(x); 
+            i1 = i0 + 1.0f;
+            if(y < 0.5f) y = 0.5f; 
+        	if(y > heightFloat + 0.5f) y = heightFloat + 0.5f; 
+        	j0 = ::floorf(y);
+            j1 = j0 + 1.0f; 
+
+            s1 = x - i0; 
+        	s0 = 1.0f - s1; 
+            t1 = y - j0; 
+            t0 = 1.0f - t1;
+                
+        	int i0i = i0;
+            int i1i = i1;
+        	int j0i = j0;
+            int j1i = j1;
+                
+			d[idx(i, j)] = s0 * (t0 * d0[idx(i0i, j0i)] + t1 * d0[idx(i0i, j1i)]) + s1 * (t0 * d0[idx(i1i, j0i)] + t1 * d0[idx(i1i, j1i)]);
+    	}
+    }
+	setBoundary(b, d);
+}
