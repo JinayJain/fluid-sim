@@ -3,6 +3,7 @@
 #include "sim.h"
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 #define SIM_SIZE 150
 #define SIM_DT 0.2f
@@ -65,7 +66,7 @@ int main()
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             // add fluid density to mouse area
-            sim.addDensity(mousePos.x, mousePos.y, 1.0f);
+            sim.addDensity(mousePos.x, mousePos.y, 200.0f);
         }
 
         window.clear();

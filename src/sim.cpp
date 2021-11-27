@@ -180,11 +180,19 @@ std::vector<float> &Sim::getDensity()
 
 void Sim::addDensity(int x, int y, float amount)
 {
-    density[idx(x, y)] += amount;
+    int loc = idx(x, y);
+    if (loc < 0 || loc >= density.size())
+        return;
+
+    density[loc] += amount;
 }
 
 void Sim::addVelocity(int x, int y, float amountX, float amountY)
 {
-    velX[idx(x, y)] += amountX;
-    velY[idx(x, y)] += amountY;
+    int loc = idx(x, y);
+    if (loc < 0 || loc >= velX.size())
+        return;
+
+    velX[loc] += amountX;
+    velY[loc] += amountY;
 }
