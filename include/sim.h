@@ -7,6 +7,10 @@ class Sim
     int width;
     int height;
 
+    float dt;
+    float visc;
+    float diff;
+
     // Arrays are stored as 1D, but can be indexed in 2D with a macro
 
     /// X Velocity at each point
@@ -41,11 +45,20 @@ class Sim
     void advect(int b, std::vector<float> &d, std::vector<float> &d0, std::vector<float> &velocX, std::vector<float> &velocY, float dt);
 
 public:
-    Sim(int width, int height);
+    Sim(int width, int height, float dt, float visc, float diff);
 
     /// Retrieve the array index for a given x, y coordinate
     int idx(int x, int y);
 
     /// Simulate a single physics step
     void step();
+
+    /// Gets a reference to the density array for rendering
+    std::vector<float> &getDensity();
+
+    /// Adds density to a certain location in the array
+    void addDensity(int x, int y, float amount);
+
+    /// Adds velocity to a certain location in the array
+    void addVelocity(int x, int y, float amountX, float amountY);
 };
