@@ -6,6 +6,7 @@
 #include <iostream>
 
 #define SIM_SIZE 150
+#define SIM_SCALE 2
 #define SIM_DT 0.2f
 #define SIM_VISC 0
 #define SIM_DIFF 0.0000001f
@@ -34,11 +35,19 @@ void renderSim(Sim &sim, sf::Uint8 *pixels)
     }
 }
 
+sf::Vector2i getMouseSimPos(sf::Window &window)
+{
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    mousePos.x /= SIM_SCALE;
+    mousePos.y /= SIM_SCALE;
+    return mousePos;
+}
+
 int main()
 {
     Sim sim(SIM_SIZE, SIM_SIZE, SIM_DT, SIM_VISC, SIM_DIFF);
 
-    sf::RenderWindow window(sf::VideoMode(SIM_SIZE, SIM_SIZE), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(SIM_SIZE * SIM_SCALE, SIM_SIZE * SIM_SCALE), "SFML works!");
 
     sf::Texture texture;
     texture.create(SIM_SIZE, SIM_SIZE);
@@ -46,6 +55,7 @@ int main()
     sf::Uint8 *pixels = new sf::Uint8[SIM_SIZE * SIM_SIZE * 4];
 
     sf::Sprite sprite(texture);
+    sprite.setScale(2.0f, 2.0f);
 
     // store the previous mouse position
     sf::Vector2i prevPos;
@@ -59,7 +69,7 @@ int main()
                 window.close();
         }
 
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Vector2i mousePos = getMouseSimPos(window);
 
         sim.addVelocity(mousePos.x, mousePos.y, (float)(mousePos.x - prevPos.x) / 10.0, (float)(mousePos.y - prevPos.y) / 10.0);
 
