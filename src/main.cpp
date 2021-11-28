@@ -6,7 +6,7 @@
 #include <iostream>
 
 #define SIM_SIZE 150
-#define SIM_SCALE 2
+#define SIM_SCALE 3
 #define SIM_DT 0.2f
 #define SIM_VISC 0
 #define SIM_DIFF 0.0000001f
@@ -55,7 +55,7 @@ int main()
     sf::Uint8 *pixels = new sf::Uint8[SIM_SIZE * SIM_SIZE * 4];
 
     sf::Sprite sprite(texture);
-    sprite.setScale(2.0f, 2.0f);
+    sprite.setScale(SIM_SCALE, SIM_SCALE);
 
     clock_t current_ticks, delta_ticks;
 
@@ -88,12 +88,12 @@ int main()
         delta_ticks = clock() - current_ticks;
         clock_t fps = CLOCKS_PER_SEC / delta_ticks;
         std::cout << fps << std::endl;
-        
+
         renderSim(sim, pixels);
         texture.update(pixels);
         window.draw(sprite);
         window.display();
-        
+
         prevPos = mousePos;
     }
 }
