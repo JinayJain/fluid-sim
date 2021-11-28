@@ -22,8 +22,6 @@ Sim::Sim(int width, int height, float dt, float visc, float diff)
 
 void Sim::step()
 {
-    std::cout << "sim.step()" << std::endl;
-
     diffuse(1, oldVelX, velX, visc, dt, 16);
     diffuse(2, oldVelY, velY, visc, dt, 16);
 

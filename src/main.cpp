@@ -57,6 +57,8 @@ int main()
     sf::Sprite sprite(texture);
     sprite.setScale(2.0f, 2.0f);
 
+    clock_t current_ticks, delta_ticks;
+
     // store the previous mouse position
     sf::Vector2i prevPos;
 
@@ -83,7 +85,11 @@ int main()
 
         sim.step();
 
+        current_ticks = clock();
         renderSim(sim, pixels);
+        delta_ticks = clock() - current_ticks;
+        clock_t fps = CLOCKS_PER_SEC / delta_ticks;
+        std::cout << fps << std::endl;
         texture.update(pixels);
         window.draw(sprite);
 
