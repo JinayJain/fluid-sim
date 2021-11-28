@@ -1,0 +1,13 @@
+#! /bin/bash
+#SBATCH -A see200002p
+#SBATCH -p GPU-shared #GPU-shared partition
+#SBATCH --gpus=v100-32:1 #allocation 1 v100 gpu
+#SBATCH -J myjob
+#SBATCH --mail-user=igovil@udel.edu
+#SBATCH --mail-type=ALL
+
+#SBATCH	-N 1
+#SBATCH -n 4
+#SBATCH	-t 00:05:00
+
+make run
