@@ -1,5 +1,4 @@
 CXX := g++
-CPPFLAGS := -lsfml-window -lsfml-graphics -lsfml-system
 INCLUDE := -Iinclude
 
 SOURCE := src
@@ -9,7 +8,7 @@ TARGET := main
 DEPS := $(BUILD)/main.o $(BUILD)/sim.o
 
 $(TARGET): $(DEPS)
-	$(CXX) $^ $(CPPFLAGS) -o $@
+	$(CXX) $^ -o $@
 
 $(BUILD)/%.o: $(SOURCE)/%.cpp
 	$(CXX) $(INCLUDE) -c -o $@ $<

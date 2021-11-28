@@ -164,7 +164,6 @@ void Sim::advect(int b, std::vector<float> &d, std::vector<float> &d0, std::vect
             int i1i = i1;
             int j0i = j0;
             int j1i = j1;
-
             d[idx(i, j)] = s0 * (t0 * d0[idx(i0i, j0i)] + t1 * d0[idx(i0i, j1i)]) + s1 * (t0 * d0[idx(i1i, j0i)] + t1 * d0[idx(i1i, j1i)]);
         }
     }
