@@ -83,17 +83,17 @@ int main()
 
         window.clear();
 
-        sim.step();
-
         current_ticks = clock();
-        renderSim(sim, pixels);
+        sim.step();
         delta_ticks = clock() - current_ticks;
         clock_t fps = CLOCKS_PER_SEC / delta_ticks;
         std::cout << fps << std::endl;
+        
+        renderSim(sim, pixels);
         texture.update(pixels);
         window.draw(sprite);
-
         window.display();
+        
         prevPos = mousePos;
     }
 }
