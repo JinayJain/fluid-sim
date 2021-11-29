@@ -4,6 +4,7 @@
 
 class Sim
 {
+public:
     int width;
     int height;
 
@@ -14,37 +15,36 @@ class Sim
     // Arrays are stored as 1D, but can be indexed in 2D with a macro
 
     /// X Velocity at each point
-    std::vector<float> velX;
+    float *velX;
     /// Y Velocity at each point
-    std::vector<float> velY;
+    float *velY;
 
     /// Old X velocity at each point
-    std::vector<float> oldVelX;
+    float *oldVelX;
     /// Old Y velocity at each point
-    std::vector<float> oldVelY;
+    float *oldVelY;
 
     /// Density of a dye at each point
-    std::vector<float> density;
+    float *density;
 
     /// Old density at each point
-    std::vector<float> oldDensity;
+    float *oldDensity;
 
     /// Sets boundary conditions
-    void setBoundary(int b, std::vector<float> &x);
+    void setBoundary(int b, float *x);
 
     /// Linear solver using Gauss-Seidel
-    void linSolve(int b, std::vector<float> &x, std::vector<float> &x0, float a, float c, int iter);
+    void linSolve(int b, float *x, float *x0, float a, float c, int iter);
 
     /// Diffuse array values
-    void diffuse(int b, std::vector<float> &x, std::vector<float> &x0, float diff, float dt, int iter);
+    void diffuse(int b, float *x, float *x0, float diff, float dt, int iter);
 
     /// Project array values
-    void project(std::vector<float> &velocX, std::vector<float> &velocY, std::vector<float> &p, std::vector<float> &div, int iter);
+    void project(float *velocX, float *velocY, float *p, float *div, int iter);
 
     /// Advect array values
-    void advect(int b, std::vector<float> &d, std::vector<float> &d0, std::vector<float> &velocX, std::vector<float> &velocY, float dt);
+    void advect(int b, float *d, float *d0, float *velocX, float *velocY, float dt);
 
-public:
     Sim(int width, int height, float dt, float visc, float diff);
 
     /// Retrieve the array index for a given x, y coordinate
@@ -54,7 +54,7 @@ public:
     void step();
 
     /// Gets a reference to the density array for rendering
-    std::vector<float> &getDensity();
+    float *getDensity();
 
     /// Adds density to a certain location in the array
     void addDensity(int x, int y, float amount);

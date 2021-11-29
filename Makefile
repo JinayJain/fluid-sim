@@ -1,5 +1,5 @@
-CXX := g++
-CPPFLAGS := -lsfml-window -lsfml-graphics -lsfml-system
+CXX := nvc++
+CPPFLAGS := -lsfml-window -lsfml-graphics -lsfml-system -acc -ta=multicore -Minfo=accel 
 INCLUDE := -Iinclude
 
 SOURCE := src
@@ -12,7 +12,7 @@ $(TARGET): $(DEPS)
 	$(CXX) $^ $(CPPFLAGS) -o $@
 
 $(BUILD)/%.o: $(SOURCE)/%.cpp
-	$(CXX) $(INCLUDE) -c -o $@ $<
+	$(CXX) $(CPPFLAGS) $(INCLUDE) -c -o $@ $<
 
 clean:
 	rm -f $(BUILD)/*

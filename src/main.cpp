@@ -1,19 +1,17 @@
 #include <SFML/Graphics.hpp>
 
 #include "sim.h"
+#include "consts.h"
+
 #include <vector>
+#include <utility>
 #include <cmath>
 #include <iostream>
-
-#define SIM_SIZE 150
-#define SIM_SCALE 3
-#define SIM_DT 0.2f
-#define SIM_VISC 0
-#define SIM_DIFF 0.0000001f
+#include <chrono>
 
 void renderSim(Sim &sim, sf::Uint8 *pixels)
 {
-    std::vector<float> &d = sim.getDensity();
+    float *d = sim.getDensity();
 
     for (int i = 0; i < SIM_SIZE; i++)
     {
@@ -45,6 +43,8 @@ sf::Vector2i getMouseSimPos(sf::Window &window)
 
 int main()
 {
+    srand(time(NULL));
+
     Sim sim(SIM_SIZE, SIM_SIZE, SIM_DT, SIM_VISC, SIM_DIFF);
 
     sf::RenderWindow window(sf::VideoMode(SIM_SIZE * SIM_SCALE, SIM_SIZE * SIM_SCALE), "SFML works!");
@@ -57,43 +57,63 @@ int main()
     sf::Sprite sprite(texture);
     sprite.setScale(SIM_SCALE, SIM_SCALE);
 
-    clock_t current_ticks, delta_ticks;
-
     // store the previous mouse position
     sf::Vector2i prevPos;
 
-    while (window.isOpen())
+    std::vector<std::pair<sf::Vector2i, sf::Vector2f>> emitters;
+
+    for (int i = 0; i < 40; i++)
     {
-        sf::Event event;
-        while (window.pollEvent(event))
+        emitters.push_back(std::make_pair(sf::Vector2i(rand() % SIM_SIZE, rand() % SIM_SIZE),
+                                          sf::Vector2f(rand() % 3 - 1, rand() % 3 - 1)));
+    }
+
+#pragma acc data copy(sim.velX [0:sim.width * sim.height], sim.velY [0:sim.width * sim.height],       \
+                      sim.oldVelX [0:sim.width * sim.height], sim.oldVelY [0:sim.width * sim.height], \
+                      sim.density [0:sim.width * sim.height], sim.oldDensity [0:sim.width * sim.height])
+    {
+        while (window.isOpen())
         {
-            if (event.type == sf::Event::Closed)
-                window.close();
+            auto start = std::chrono::high_resolution_clock::now();
+
+            sf::Event event;
+            while (window.pollEvent(event))
+            {
+                if (event.type == sf::Event::Closed)
+                    window.close();
+            }
+
+            sf::Vector2i mousePos = getMouseSimPos(window);
+
+            sim.addVelocity(mousePos.x, mousePos.y, (float)(mousePos.x - prevPos.x) / 10.0, (float)(mousePos.y - prevPos.y) / 10.0);
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            {
+                // add fluid density to mouse area
+                sim.addDensity(mousePos.x, mousePos.y, 200.0f);
+            }
+
+            for (auto &emitter : emitters)
+            {
+                sim.addDensity(emitter.first.x, emitter.first.y, 200.0f);
+                sim.addVelocity(emitter.first.x, emitter.first.y, emitter.second.x, emitter.second.y);
+            }
+
+            window.clear();
+
+            sim.step();
+
+            renderSim(sim, pixels);
+            texture.update(pixels);
+            window.draw(sprite);
+            window.display();
+
+            prevPos = mousePos;
+
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> diff = end - start;
+
+            std::cout << "FPS: " << 1.0 / diff.count() << std::endl;
         }
-
-        sf::Vector2i mousePos = getMouseSimPos(window);
-
-        sim.addVelocity(mousePos.x, mousePos.y, (float)(mousePos.x - prevPos.x) / 10.0, (float)(mousePos.y - prevPos.y) / 10.0);
-
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
-            // add fluid density to mouse area
-            sim.addDensity(mousePos.x, mousePos.y, 200.0f);
-        }
-
-        window.clear();
-
-        current_ticks = clock();
-        sim.step();
-        delta_ticks = clock() - current_ticks;
-        clock_t fps = CLOCKS_PER_SEC / delta_ticks;
-        std::cout << fps << std::endl;
-
-        renderSim(sim, pixels);
-        texture.update(pixels);
-        window.draw(sprite);
-        window.display();
-
-        prevPos = mousePos;
     }
 }
