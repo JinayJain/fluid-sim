@@ -1,4 +1,4 @@
-CXX := nvc++
+CXX := g++
 INCLUDE := -Iinclude
 CPPFLAGS := -acc -gpu=cc70 -Minfo=accel
 SOURCE := src
