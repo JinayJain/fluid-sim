@@ -9,6 +9,10 @@
 #include <iostream>
 #include <chrono>
 
+#define COLOR_R 0
+#define COLOR_G 255
+#define COLOR_B 255
+
 void renderSim(Sim &sim, sf::Uint8 *pixels)
 {
     float *d = sim.getDensity();
@@ -18,10 +22,10 @@ void renderSim(Sim &sim, sf::Uint8 *pixels)
         for (int j = 0; j < SIM_SIZE; j++)
         {
             int idx = sim.idx(j, i);
-            float val = fmin(1.0, d[idx] / 200.0f);
-            int r = val * 255;
-            int g = val * 255;
-            int b = val * 255;
+            float val = fmin(1.0, d[idx] / 70.0f);
+            int r = val * COLOR_R;
+            int g = val * COLOR_G;
+            int b = val * COLOR_B;
             int a = 255;
 
             int idx2 = (i * SIM_SIZE + j) * 4;
@@ -47,7 +51,7 @@ int main()
 
     Sim sim(SIM_SIZE, SIM_SIZE, SIM_DT, SIM_VISC, SIM_DIFF);
 
-    sf::RenderWindow window(sf::VideoMode(SIM_SIZE * SIM_SCALE, SIM_SIZE * SIM_SCALE), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(SIM_SIZE * SIM_SCALE, SIM_SIZE * SIM_SCALE), "Fluid Simulation");
 
     sf::Texture texture;
     texture.create(SIM_SIZE, SIM_SIZE);
