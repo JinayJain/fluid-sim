@@ -1,4 +1,4 @@
-![demo](demo.gif)
+![demo](sim-demo.gif)
 
 # Parallel Fluid Simulation
 
