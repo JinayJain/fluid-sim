@@ -1,0 +1,12 @@
+#! /bin/bash
+#SBATCH -A see200002p
+#SBATCH -p RM-shared
+#SBATCH -J myjob
+#SBATCH --mail-user=igovil@udel.edu
+#SBATCH --mail-type=ALL
+
+#SBATCH -n 64
+#SBATCH	-t 00:30:00
+
+export ACC_NUM_CORES=64
+make run
