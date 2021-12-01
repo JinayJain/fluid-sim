@@ -6,5 +6,6 @@
 #define SIM_DT 0.2f
 #define SIM_VISC 0
 #define SIM_DIFF 0.0000001f
+#define SIM_FADE 0.01f
 
-#define SOLVE_ITERS 4
+#define SOLVE_ITERS 8

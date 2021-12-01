@@ -1,5 +1,5 @@
 CXX := nvc++
-CPPFLAGS := -lsfml-window -lsfml-graphics -lsfml-system -acc -ta=multicore -Minfo=accel 
+CPPFLAGS := -lsfml-window -lsfml-graphics -lsfml-system -acc -ta=tesla -Minfo=accel 
 INCLUDE := -Iinclude
 
 SOURCE := src

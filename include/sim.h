@@ -56,9 +56,11 @@ public:
     /// Gets a reference to the density array for rendering
     float *getDensity();
 
+#pragma acc routine seq
     /// Adds density to a certain location in the array
     void addDensity(int x, int y, float amount);
 
+#pragma acc routine seq
     /// Adds velocity to a certain location in the array
     void addVelocity(int x, int y, float amountX, float amountY);
 };

@@ -9,19 +9,37 @@
 #include <iostream>
 #include <chrono>
 
+#include <openacc.h>
+
 #define COLOR_R 0
 #define COLOR_G 255
 #define COLOR_B 255
 
-void renderSim(Sim &sim, sf::Uint8 *pixels)
+void renderSim(Sim &sim, sf::Uint8 *pixels, sf::Vector2i mousePos, sf::Vector2i prevPos, bool pressed)
 {
     float *d = sim.getDensity();
+    float *vx = sim.velX;
+    float *vy = sim.velY;
 
+#pragma acc parallel loop present(d [0:SIM_SIZE * SIM_SIZE], vx [0:SIM_SIZE * SIM_SIZE], vy [0:SIM_SIZE * SIM_SIZE]) copy(pixels [0:SIM_SIZE * SIM_SIZE * 4])
     for (int i = 0; i < SIM_SIZE; i++)
     {
+#pragma acc loop
         for (int j = 0; j < SIM_SIZE; j++)
         {
-            int idx = sim.idx(j, i);
+            int idx = i * SIM_SIZE + j;
+
+            if (j == mousePos.x && i == mousePos.y && i > 0 && i < SIM_SIZE - 1 && j > 0 && j < SIM_SIZE - 1)
+            {
+                if (pressed)
+                    d[idx] += 200.0f;
+
+                vx[idx] += (float)(mousePos.x - prevPos.x) / 10.0;
+                vy[idx] += (float)(mousePos.y - prevPos.y) / 10.0;
+            }
+
+            d[idx] = fmax(0, d[idx] - SIM_FADE);
+
             float val = fmin(1.0, d[idx] / 70.0f);
             int r = val * COLOR_R;
             int g = val * COLOR_G;
@@ -89,25 +107,13 @@ int main()
 
             sf::Vector2i mousePos = getMouseSimPos(window);
 
-            sim.addVelocity(mousePos.x, mousePos.y, (float)(mousePos.x - prevPos.x) / 10.0, (float)(mousePos.y - prevPos.y) / 10.0);
-
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            {
-                // add fluid density to mouse area
-                sim.addDensity(mousePos.x, mousePos.y, 200.0f);
-            }
-
-            for (auto &emitter : emitters)
-            {
-                sim.addDensity(emitter.first.x, emitter.first.y, 200.0f);
-                sim.addVelocity(emitter.first.x, emitter.first.y, emitter.second.x, emitter.second.y);
-            }
+            // sim.addVelocity(mousePos.x, mousePos.y, (float)(mousePos.x - prevPos.x) / 10.0, (float)(mousePos.y - prevPos.y) / 10.0);
 
             window.clear();
 
             sim.step();
 
-            renderSim(sim, pixels);
+            renderSim(sim, pixels, mousePos, prevPos, sf::Mouse::isButtonPressed(sf::Mouse::Left));
             texture.update(pixels);
             window.draw(sprite);
             window.display();
