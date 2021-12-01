@@ -7,4 +7,4 @@
 #define SIM_VISC 0
 #define SIM_DIFF 0.0000001f
 
-#define SOLVE_ITERS 8
+#define SOLVE_ITERS 4
