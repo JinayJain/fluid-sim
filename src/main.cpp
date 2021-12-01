@@ -19,8 +19,8 @@ int main()
                       sim.oldVelX [0:sim.width * sim.height], sim.oldVelY [0:sim.width * sim.height], \
                       sim.density [0:sim.width * sim.height], sim.oldDensity [0:sim.width * sim.height])
     {
-        for (int mousePosx = 0; mousePosx < SIM_SIZE; mousePosx+=3) {
-            for (int mousePosy = 0; mousePosy < SIM_SIZE; mousePosy+=3) {
+        for (int mousePosx = 0; mousePosx < SIM_SIZE; mousePosx+=50) {
+            for (int mousePosy = 0; mousePosy < SIM_SIZE; mousePosy+=50) {
                 auto start = std::chrono::high_resolution_clock::now();
                 sim.addVelocity(mousePosx, mousePosy, (float)(mousePosx - prevPosx) / 10.0, (float)(mousePosy - prevPosy) / 10.0);
                 if (rand() % 10 < 5) {
