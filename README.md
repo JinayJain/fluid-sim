@@ -10,6 +10,12 @@ This project is a parallelized implementation of the [Jos Stam paper](http://gra
 
 Inspired by a [serial implementation](https://github.com/Driema/euler-fluid-cpp) found on GitHub.
 
+## Demo
+
+Click to see a [YouTube demonstration](https://www.youtube.com/watch?v=wJig-ARfRPA) of the project in action.
+
+[![Demo Video](https://img.youtube.com/vi/wJig-ARfRPA/0.jpg)](https://www.youtube.com/watch?v=wJig-ARfRPA)
+
 ## Requirements
 
 The following tools are required to run the project:
