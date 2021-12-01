@@ -8,6 +8,8 @@
 
 This project is a parallelized implementation of the [Jos Stam paper](http://graphics.cs.cmu.edu/nsp/course/15-464/Fall09/papers/StamFluidforGames.pdf) on realtime fluid simulations. We use SFML, OpenACC, and C++ to implement the simulation and achieve a high performance visualization.
 
+Inspired by a [serial implementation](https://github.com/Driema/euler-fluid-cpp) found on GitHub.
+
 ## Requirements
 
 The following tools are required to run the project:
